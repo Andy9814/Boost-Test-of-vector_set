@@ -244,7 +244,7 @@ typename vector_set<Key>::iterator vector_set<Key>::erase(const_iterator pos) {
 	value_type* to = const_cast<value_type*>(pos);
 	while (to != end_) {
 		*to = std::move(*(to + 1));
-		cout << "in header the *to"<<*to << endl;
+		
 		++to;
 	}
 	--end_;

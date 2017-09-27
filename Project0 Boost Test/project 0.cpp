@@ -266,23 +266,137 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(insertt,T,test_types) {
 
 
 // clear 
+using test_types = boost::mpl::list<int, long, unsigned char, double>;
 
-BOOST_AUTO_TEST_CASE(clear_test) {
-	vector_set<int> v;
+BOOST_AUTO_TEST_CASE_TEMPLATE(erase_test,T,test_types) {
+	vector_set<T> v;
 	BOOST_CHECK(v.empty());
 	BOOST_CHECK(v.size() == 0);
 	BOOST_CHECK(v.capacity() == 0);
 
 
 
-
-	for (size_t i = 0; i < 10; ++i) {
+//	vector_set<int>::iterator it1 = v.begin();
+	for (size_t i = 1; i <= 10; ++i) {
 		v.insert(i);
-		BOOST_CHECK(v.size() == i + 1);
+	
+		BOOST_CHECK(v.size() == i );
 		BOOST_CHECK(!v.empty());
-		BOOST_CHECK(*(v.begin() + i) == i);
+		//BOOST_CHECK(*it1 == i);
+	}
+
+	auto valueToDelete = 5;
+	auto pos = v.begin() + 4;
+
+	BOOST_CHECK(*(v.begin() + 4) == valueToDelete);
+	BOOST_CHECK(v.size() == 10);
+	v.erase(pos);
+	// check  the value after 5 the move forward;
+	BOOST_CHECK(*(v.begin() + 4) == 6);
+	BOOST_CHECK(v.size() == 9);
+
+
+
+	auto i = 0; 
+		for (vector_set<T> ::iterator it = v.begin(); it <= v.begin() + 3; ++it,++i) {
+
+			//check before element does not move
+		BOOST_CHECK(*(v.begin() + i) == *it);
+
 	}
 
 }
+
+ //erase for range of element
+using test_types = boost::mpl::list<int, long, unsigned char, double>;
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(erase_test_range,T,test_types) {
+	vector_set<T> v;
+	BOOST_CHECK(v.empty());
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.capacity() == 0);
+
+
+
+	//	vector_set<int>::iterator it1 = v.begin();
+	for (size_t i = 1; i <= 10; ++i) {
+		v.insert(i);
+		//	cout << "*it  = " << *it1 << endl;
+		BOOST_CHECK(v.size() == i);
+		BOOST_CHECK(!v.empty());
+		//BOOST_CHECK(*it1 == i);
+	}
+
+	//for (auto e : v) {
+	//	cout << "in the vector = " << e << endl;
+	//}
+
+	auto first = v.begin();
+	auto last = v.begin() + 5;
+
+	v.erase(first, last);
+
+
+	BOOST_CHECK(v.size() == 5);
+
+	auto i = 0; 
+	auto d = 6;
+		for (vector_set<T> ::iterator it = v.begin(); it <= v.begin() + 4; ++it,++i,++d) {
+
+			//check before element does not move
+		BOOST_CHECK(*(v.begin() + i) == *it);
+		BOOST_CHECK(*it == d);
+
+	}
+}
+
+
+// clear method
+using test_types = boost::mpl::list<int, long, unsigned char, double>;
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(clear_test, T, test_types) {
+	vector_set<T> v;
+	BOOST_CHECK(v.empty());
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.capacity() == 0);
+
+
+
+	//	vector_set<int>::iterator it1 = v.begin();
+	for (size_t i = 1; i <= 10; ++i) {
+		v.insert(i);
+		//	cout << "*it  = " << *it1 << endl;
+		BOOST_CHECK(v.size() == i);
+		BOOST_CHECK(!v.empty());
+		//BOOST_CHECK(*it1 == i);
+	}
+
+	
+
+	
+
+	v.clear();
+	
+
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.empty());
+
+
+
+
+
+	auto i = 0;
+	auto d = 6;
+	for (vector_set<T> ::iterator it = v.begin(); it <= v.begin() + 9; ++it, ++i, ++d) {
+
+		//check whether the element is zero
+		BOOST_CHECK(*(v.begin() + i) == 0);
+		BOOST_CHECK(*it == 0);
+
+	}
+}
+
+
+
 
 
