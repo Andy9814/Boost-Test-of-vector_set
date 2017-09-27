@@ -121,61 +121,68 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(copy_constructor_test, T, copy_constructor_test_ty
 }
 
 
-// Empty_copy construcotr
-//using c_constructor_test_types = boost::mpl::list<int, long, unsigned char, double>;
-//BOOST_AUTO_TEST_CASE_TEMPLATE(c_constructor_test, T, c_constructor_test_types)
-//{
-//	vector_set<T> v;
-//	BOOST_CHECK(v.empty());
-//	BOOST_CHECK(v.size() == 0);
-//	BOOST_CHECK(v.capacity() == 0);
-//
-//	//int a = 1, b = 2.0;
-//	double a = 45.2, b = 55.3;
-//	//string a = "hello", b = "mini";
-//	v.insert(a);
-//	v.insert(b);
-//	// check the size
-//	BOOST_CHECK(!v.empty());
-//	BOOST_CHECK(v.size() != 0);
-//	BOOST_CHECK(v.capacity() != 0);
-//	//BOOST_CHECK(v.size() == v.size());
-//
-//
-//
-//
-//	// check the pointers
-//	BOOST_CHECK(*(v.begin()) == a);
-//	BOOST_CHECK(*(v.end() - 1) == b);
-//
-//	BOOST_CHECK(v.end() != nullptr);
-//	BOOST_CHECK(v.cbegin() != nullptr);
-//	BOOST_CHECK(*v.cbegin() == a);
-//	BOOST_CHECK(*(v.cend()-1) == b);
-//	
-//
-//
-//	//	
-//	//
-//	//// now the copied one.
-//	vector_set<T> v_copy(v);
-//
-//	BOOST_CHECK(!v_copy.empty());
-//
-//	BOOST_CHECK(v_copy.size() != 0);
-//
-//	BOOST_CHECK(*v.begin() == *v_copy.begin());
-//	BOOST_CHECK((v_copy.begin()) != nullptr);
-//	BOOST_CHECK((*v_copy.begin()) == a); // check whether the copy's ifrst element is 1
-//
-//
-//	BOOST_CHECK(&(*v.end()) != &(*v_copy.end()));// check whether ther address is equall
-//
-//
-//}
-//
-//// copy constructor in using string
-//
+ // Empty_copy construcotr
+using c_constructor_test_types = boost::mpl::list<int, long, unsigned char, double>;
+BOOST_AUTO_TEST_CASE_TEMPLATE(c_constructor_test, T, c_constructor_test_types)
+{
+	vector_set<T> v;
+	BOOST_CHECK(v.empty());
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.capacity() == 0);
+
+	v = { 1,2,3,4,5,6,7,8,9,10 };
+	
+	// check the size
+	BOOST_CHECK(!v.empty());
+	BOOST_CHECK(v.size() != 0);
+	BOOST_CHECK(v.capacity() != 0);
+	
+	vector_set<T>:: iterator it = v.begin();
+
+
+
+	// check the pointers
+	BOOST_CHECK(*(v.begin()) == 1);
+	BOOST_CHECK(*(v.end() - 1) == 10);
+
+	BOOST_CHECK(v.end() != nullptr);
+	BOOST_CHECK(v.cbegin() != nullptr);
+	BOOST_CHECK(*v.cbegin() == 1);
+	BOOST_CHECK(*(v.cend()-1) == 10);
+	
+
+
+	//	
+	//
+	//// now the copied one.
+	vector_set<T> v_copy(v);
+
+	BOOST_CHECK(!v_copy.empty());
+
+	BOOST_CHECK(v_copy.size() != 0);
+
+	BOOST_CHECK(*v.begin() == *v_copy.begin());
+	BOOST_CHECK((v_copy.begin()) != nullptr);
+	BOOST_CHECK((*v_copy.begin()) == 1); // check whether the copy's ifrst element is 1
+
+
+	BOOST_CHECK(&(*v.end()) != &(*v_copy.end()));// check whether ther address is equall
+
+
+
+	vector_set<T>::iterator itCopy = v_copy.begin();
+	
+	for (; itCopy != v_copy.end(); ++itCopy, ++it) {
+
+	// check each element
+		BOOST_CHECK(*it== *itCopy);
+	
+	}
+
+}
+
+// copy constructor in using string
+
 
 //using cString_constructor_test_types = boost::mpl::list<int, long, unsigned char, double>;
 //BOOST_AUTO_TEST_CASE_TEMPLATE(cstring_constructor_test, T, cString_constructor_test_types)
@@ -224,10 +231,29 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(copy_constructor_test, T, copy_constructor_test_ty
 //
 //	BOOST_CHECK(&(*v.end()) != &(*v_copy.end()));// check whether ther address is equall
 //
+//	auto i = 0;
+//	for (vector_set<T> ::iterator it = v_copy.begin(); it != v.end(); ++it, ++i) {
+//
+//		//check before element does not move
+//		BOOST_CHECK(*(v_copy.begin() + i) == *it);
+//
+//	}
 //
 //}
 
 
+
+
+
+
+
+
+
+
+
+
+
+// insert
 using test_types = boost::mpl::list<int, long, unsigned char, double>;
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(insertt,T,test_types) {
@@ -395,6 +421,184 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(clear_test, T, test_types) {
 
 	}
 }
+
+
+// copy operator.
+using test_types = boost::mpl::list<int, long, unsigned char, double>;
+BOOST_AUTO_TEST_CASE_TEMPLATE(copy_optor,T, test_types) {
+	vector_set<T> v;
+
+
+	BOOST_CHECK(v.empty());
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.capacity() == 0);
+
+
+
+		vector_set<T>::iterator it1 = v.begin();
+	for (size_t i = 1; i <= 10; ++i) {
+		v.insert(i);
+		//	cout << "*it  = " << *it1 << endl;
+		BOOST_CHECK(v.size() == i);
+		BOOST_CHECK(!v.empty());
+		/*BOOST_CHECK(*it1 == i);
+		cout << "*it1  " << *it1 << endl;*/
+		;
+	}
+
+	//checking capacity
+	BOOST_CHECK(v.capacity() >= v.size());
+
+	auto i = 0;
+	for (vector_set<T> ::iterator it = v.begin(); it <= v.begin()+9; ++it, ++i) {
+		
+		
+		//check before element does not move
+		BOOST_CHECK(*(v.begin() + i) == *it);
+		//BOOST_CHECK(v.size() == i+1);
+
+	}
+	
+
+
+
+
+
+	//copy 
+	vector_set<T> v_Copy;
+	BOOST_CHECK(v_Copy.capacity() <= v.size());
+	BOOST_CHECK(v_Copy.capacity() == 0);
+	// now assign the value to the copy make a new buffer
+	v_Copy = v;
+	BOOST_CHECK(v_Copy.capacity() >= v.size());
+	BOOST_CHECK(v_Copy.capacity() != 0);
+
+
+	BOOST_CHECK(v_Copy.begin() != v.begin());
+	BOOST_CHECK(v_Copy.size() == v.size());
+
+
+	auto f = 0;
+	for (size_t i = 1; i <= 10; ++i,++f) {
+	
+		//	cout << "*it  = " << *it1 << endl;
+		BOOST_CHECK(*v_Copy.begin() == *v.begin());
+		BOOST_CHECK(*(v_Copy.begin() +f) == *(v.begin()+f));
+		// the end pointer should have different address
+		BOOST_CHECK(&(*v_Copy.end()) != &(*v.end()));
+		
+
+		BOOST_CHECK(!v.empty());
+		
+		
+	}
+}
+
+
+
+// move assignment operator
+using test_types = boost::mpl::list<int, long, unsigned char, double>;
+BOOST_AUTO_TEST_CASE_TEMPLATE(move_optor, T, test_types) {
+	vector_set<T> v;
+
+
+	BOOST_CHECK(v.empty());
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.capacity() == 0);
+
+	v ={ 1,2,3,4,5,6,7,8,9,10 };
+
+	
+	//for (size_t i = 1; i <= 10; ++i) {
+	//	v.insert(i);
+	//	//	cout << "*it  = " << *it1 << endl;
+	//	BOOST_CHECK(v.size() == i);
+	//	BOOST_CHECK(!v.empty());
+	//	/*BOOST_CHECK(*it1 == i);
+	//	cout << "*it1  " << *it1 << endl;*/
+	//	;
+	//}
+
+	//checking capacity
+	BOOST_CHECK(v.capacity() >= v.size());
+
+	vector_set<T> ::iterator it = v.begin();
+	auto i = 0;
+	for (; it <= v.begin() + 9; ++it, ++i) {
+
+
+		//check before element does not move
+		BOOST_CHECK(*(v.begin() + i) == *it);
+		//BOOST_CHECK(v.size() == i+1);
+
+	}
+
+
+
+	//move
+	vector_set<T> v_Move = move(v);
+	BOOST_CHECK(v.empty());
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.capacity() == 0);
+
+	BOOST_CHECK(v_Move.size() == 10);
+	BOOST_CHECK(!v_Move.empty());
+	BOOST_CHECK(v_Move.size() != 0);
+
+	BOOST_CHECK(v_Move.capacity() != 0);
+
+	
+
+	//check all the values
+	auto t = 0;
+	vector_set<T> ::iterator itMove = v_Move.begin();
+	for (; itMove != v_Move.end(); ++itMove, ++t) {
+
+
+		//check before element does not move
+		BOOST_CHECK(*(v_Move.begin() + t) == *itMove);
+		//BOOST_CHECK(v.size() == i+1);
+
+	}
+	// the iterator  will be same
+	BOOST_CHECK(it == itMove);
+	BOOST_CHECK(v.begin() != v_Move.begin());
+}
+
+// operator initializer
+using test_types = boost::mpl::list<int, long, unsigned char, double>;
+BOOST_AUTO_TEST_CASE_TEMPLATE(intializerList_optor, T, test_types) {
+	vector_set<T> v;
+	BOOST_CHECK(v.empty());
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.capacity() == 0);
+	BOOST_CHECK(v.begin() == nullptr);
+	BOOST_CHECK(v.end() == nullptr);
+	v = { 1,2,3,4,5,6,7,8,9,10 };
+
+	BOOST_CHECK(!v.empty());
+	BOOST_CHECK(v.size() != 0);
+	BOOST_CHECK(v.capacity() != 0);
+	BOOST_CHECK(v.begin() != nullptr);
+	BOOST_CHECK(*v.begin() == 1);
+	BOOST_CHECK(v.size() == 10);
+	auto t = 0;
+	vector_set<T> ::iterator it = v.begin();
+	for (; it != v.end(); ++it, ++t) {
+		//check before element does not move
+		BOOST_CHECK(*(v.begin() + t) == *it);
+		//BOOST_CHECK(v.size() == i+1);
+
+	}
+
+
+
+}
+
+
+//
+
+	
 
 
 
