@@ -1,4 +1,7 @@
-
+/*
+Nripdeep singh
+2017-9-29
+boost_testing*/
 #define BOOST_TEST_MODULE UNIT_TEST
 #include <boost\test\unit_test.hpp>
 #include<iostream>
@@ -8,18 +11,16 @@
 
 using namespace std;
 
-// constructor A a
-//destuctor ~A;
-// copy constructor A b(a);
-// Move constructor A c(move);
-// 
+#include<boost\mpl\list.hpp>
+// test_types for all types
+using test_types = boost::mpl::list<int, long, unsigned char, double>;
+// string test types
 
+using string_test_types = boost::mpl::list<string>;
+// bool test types
+using bool_test_types = boost::mpl::list<bool>;
 
 // default constructor
-#include<boost\mpl\list.hpp>
-using test_types = boost::mpl::list<int, long, unsigned char, double>;
-using string_test_types = boost::mpl::list<string>;
-using bool_test_types = boost::mpl::list<bool>;
 BOOST_AUTO_TEST_CASE_TEMPLATE(default_constructor_test, T,test_types) 
 	{	
 	vector_set<T> v_Def;
@@ -40,16 +41,9 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(default_constructor_test, T,test_types)
 	BOOST_CHECK((v_Def.rend() == v_Def.rbegin ()));
 	BOOST_CHECK((v_Def.crend() == v_Def.crbegin()));
 	BOOST_CHECK((v_Def.crbegin()== v_Def.crend()));
-
-
-	/*BOOST_CHECK(v_Def.cbegin() == nullptr);
-*/
-	
-
 }
 
-
-
+// all iterators
 BOOST_AUTO_TEST_CASE_TEMPLATE(test,T, test_types)
 {
 	vector_set<T> v;
@@ -59,7 +53,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(test,T, test_types)
 	//
 	BOOST_CHECK(v.begin() == nullptr);
 
-	for (size_t i = 1; i <= 10; ++i) {
+	for (int i = 1; i <= 10; ++i) {
 		v.insert(i);
 		BOOST_CHECK(v.size() == i );
 		BOOST_CHECK(!v.empty());
@@ -112,18 +106,12 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(test,T, test_types)
 		BOOST_CHECK_MESSAGE(*(v.crbegin()) - i == 10 - i, "Error *(v.being() should be equal to i");
 
 	}
-
-
-	
 	BOOST_CHECK(v.end() != nullptr);
 BOOST_CHECK(v.cbegin() != nullptr);
 	BOOST_CHECK(*v.cbegin() == 1);
 	BOOST_CHECK(*(v.cend()-1) == 10);
-
 }
 
-
- 
 /*
 Method = copy constructor
 */
@@ -158,40 +146,25 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(c_constructor_test, T,test_types)
 
 	// now the copied one.
 	vector_set<T> v_copy(v);
-
-	 
 	BOOST_CHECK(!v_copy.empty());
-
 	BOOST_CHECK(v_copy.size() != 0);
-
 	BOOST_CHECK(*v.begin() == *v_copy.begin());
 	BOOST_CHECK((v_copy.begin()) != nullptr);
 	BOOST_CHECK((*v_copy.begin()) == 1); // check whether the copy's ifrst element is 1
 	BOOST_CHECK(*(v.end()-1) == *(v_copy.end()-1));
 	// check for address
 	BOOST_CHECK(&(*v.begin()) != &(*v_copy.begin()));// check whether ther address is equall
-
-	
-
 	BOOST_CHECK(&(*v.end()) != &(*v_copy.end()));// check whether ther address is equall
-
-
-
 	vector_set<T>::iterator itCopy = v_copy.begin();
 	
 	for (; itCopy != v_copy.end(); ++itCopy, ++it) {
-
 	// check each element
 		BOOST_CHECK(*it== *itCopy);
-	
 	}
 
 	// check the size
-
 	BOOST_CHECK_EQUAL(v_copy.size() , v.size());
 	BOOST_CHECK_MESSAGE(v_copy.capacity() == 10,"Error the capacity should be equall to 10");
-
-
 }
 
 // copy constructor in using string
@@ -221,16 +194,11 @@ BOOST_AUTO_TEST_CASE(string_copy_constructor_test)
 
 	//// now the copied one.
 	vector_set<string> v_copy(v);
-
 	BOOST_CHECK(!v_copy.empty());
-
 	BOOST_CHECK(v_copy.size() != 0);
-
 	BOOST_CHECK(*v.begin() == *v_copy.begin());
 	BOOST_CHECK((v_copy.begin()) != nullptr);
 	BOOST_CHECK((*v_copy.begin()) == "hello"); // check whether the copy's ifrst element is 1
-
-
 	BOOST_CHECK(&(*v.end()) != &(*v_copy.end()));// check whether ther address is equall
 
 	auto i = 0;
@@ -246,8 +214,6 @@ BOOST_AUTO_TEST_CASE(string_copy_constructor_test)
 }
 
 
-
-
 /*
 Method - Move Constructor
 purpose - test move Constructor
@@ -261,8 +227,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(move_const_test, T,test_types)
 	BOOST_CHECK(v.capacity() == 0);
 
 	v = { 1,2,3,4,5,6,7,8,9,10 };
-
-
 	// check the size
 	BOOST_CHECK(!v.empty());
 	BOOST_CHECK(v.size() != 0);
@@ -271,20 +235,14 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(move_const_test, T,test_types)
 	// create the iterator
 	vector_set<T>::iterator it = v.begin();
 
-
-
 	// check the pointers
 	BOOST_CHECK(*(v.begin()) == 1);
 	BOOST_CHECK(*(v.end() - 1) == 10);
-	
 	BOOST_CHECK(v.end() != nullptr);
 	BOOST_CHECK(v.cbegin() != nullptr);
 	BOOST_CHECK(*v.cbegin() == 1);
 	BOOST_CHECK(*(v.cend() - 1) == 10);
 
-
-
-	
 	// new vector with moving constructor
 
 	vector_set<T>v_Move(move(v));
@@ -294,38 +252,21 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(move_const_test, T,test_types)
 	BOOST_CHECK_EQUAL(v.size(),0);
 	BOOST_CHECK_EQUAL(v.capacity(),0);
 	BOOST_CHECK_MESSAGE(v.begin() == nullptr,"now the v is nullptr");
-	
-
-
 	BOOST_CHECK_EQUAL(v_Move.size(), 10);
 	BOOST_CHECK(!v_Move.empty());
 	BOOST_CHECK(v_Move.size() != 0);
-
 	BOOST_CHECK(v_Move.capacity() != 0);
 
 	auto t = 1;
 	vector_set<T> ::iterator itMove = v_Move.begin();
 	for (; itMove != v_Move.end(); ++itMove, ++t) {
-
-
 		//check before element does not move
 		BOOST_CHECK_EQUAL(*itMove,t);
-		
-
-
 	}
 	// the iterator  will be same
 	BOOST_CHECK(it != itMove);
 	BOOST_CHECK(v.begin() != v_Move.begin());
-
-	
 }
-
-
-
-
-
-
 
 /*
 Method = move  string construtor
@@ -336,11 +277,7 @@ BOOST_AUTO_TEST_CASE(string_move_const) {
 
 
 	vector_set<string> v = { "abc","cba" };
-
-
-	
 	BOOST_CHECK_MESSAGE(!v.empty(),"vector is not empty, so it is an error");
-	
 	BOOST_CHECK_EQUAL(!v.capacity(),0);
 	BOOST_CHECK_EQUAL(!v.size(), 0);
 
@@ -349,16 +286,11 @@ BOOST_AUTO_TEST_CASE(string_move_const) {
 	BOOST_CHECK(!vMove.empty());
 	BOOST_CHECK(vMove.size() != 0);
 	BOOST_CHECK(vMove.capacity() != 0);
-
-
-
 	BOOST_CHECK(vMove.size() == 2);
 	BOOST_CHECK_EQUAL(*vMove.begin() , "abc");
 	BOOST_CHECK_EQUAL(*(vMove.begin()+1), "cba");
 
 	// check the original vector should be empty
-	
-
 	BOOST_CHECK(v.empty());
 	BOOST_CHECK_EQUAL(v.size(), 0);
 	BOOST_CHECK_EQUAL(v.capacity(), 0);
@@ -373,11 +305,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(bool_move_const,T,test_types) {
 
 
 	vector_set<bool> v = { false,true };
-
-
-
 	BOOST_CHECK_MESSAGE(!v.empty(), "vector is not empty, so it is an error");
-
 	BOOST_CHECK_EQUAL(!v.capacity(), 0);
 	BOOST_CHECK_EQUAL(!v.size(), 0);
 	
@@ -388,16 +316,11 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(bool_move_const,T,test_types) {
 	BOOST_CHECK(!vMove.empty());
 	BOOST_CHECK(vMove.size() != 0);
 	BOOST_CHECK(vMove.capacity() != 0);
-
-
-
 	BOOST_CHECK(vMove.size() == 2);
 	BOOST_CHECK_EQUAL(*vMove.begin(), false);
 	BOOST_CHECK_EQUAL(*(vMove.begin() + 1), true);
 
 	//// check the original vector should be empty
-
-
 	BOOST_CHECK(v.empty());
 	BOOST_CHECK_EQUAL(v.size(), 0);
 	BOOST_CHECK_EQUAL(v.capacity(), 0);
@@ -406,47 +329,29 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(bool_move_const,T,test_types) {
 
 }
 
-
-
-
-
-
-
 // insert
-BOOST_AUTO_TEST_CASE_TEMPLATE(insertt,T,test_types) {
+BOOST_AUTO_TEST_CASE_TEMPLATE(insertt, T, test_types) {
 	vector_set<int> v;
 	BOOST_CHECK(v.empty());
-		BOOST_CHECK(v.size() == 0);
-		BOOST_CHECK(v.capacity() == 0);
-		
-		v.insert(1);
-		v.insert(2);
-		v.insert(3);
-		v.insert(4); 
-			v.insert(5);
-			v.insert(6);
-			v.insert(7);
-			v.insert(8);
-			v.insert(9);
-		
+	BOOST_CHECK(v.size() == 0);
+	BOOST_CHECK(v.capacity() == 0);
 
+	v.insert(1);
+	v.insert(2);
+	v.insert(3);
+	v.insert(4);
+	v.insert(5);
+	v.insert(6);
+	v.insert(7);
+	v.insert(8);
+	v.insert(9);
+auto a = 0;
+		for (size_t i = 1; i <= v.size(); ++i,++a) {
+		BOOST_CHECK(*(v.begin()+a ) == i);
+	}
 
-//	v.lower_bound(v.begin());
-
-
-	//	BOOST_CHECK(v.capacity() == ( v.end()-1*2));
 	BOOST_CHECK(v.size() != 0);
-	
-	//auto insertLocation = lower_bound(v.begin(), v.end()), 1);
-
-	//v.insert(1);
-
-
-	//BOOST_CHECK(v.capacity() == *(v.end()-1));
-	//BOOST_CHECK();
 }
-
-
 
 /*
 Method = erase
@@ -457,20 +362,17 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(erase_test,T,test_types) {
 	BOOST_CHECK(v.size() == 0);
 	BOOST_CHECK(v.capacity() == 0);
 
-
-
 // insert some element in it
-	for (size_t i = 1; i <= 10; ++i) {
+	for (int i = 1; i <= 10; ++i) {
 		v.insert(i);
 	
 		BOOST_CHECK(v.size() == i );
 		BOOST_CHECK(!v.empty());
-		//BOOST_CHECK(*it1 == i);
+		
 	}
 
 	auto valueToDelete = 5;
 	auto pos = v.begin() + 4;
-
 	BOOST_CHECK(*(v.begin() + 4) == valueToDelete);
 	BOOST_CHECK(v.size() == 10);
 	v.erase(pos);
@@ -484,8 +386,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(erase_test,T,test_types) {
 		for (vector_set<T> ::iterator it = v.begin(); it <= v.begin() + 3; ++it,++i) {
 
 			//check before element does not move
-		BOOST_CHECK(*(v.begin() + i) == *it);
-
+			BOOST_CHECK(*(v.begin() + i) == *it);
 	}
 
 }
@@ -540,25 +441,17 @@ BOOST_CHECK(*(v.begin() + 7) == "kimc");
 
 	BOOST_CHECK(v.size() == 8);
 
-	// after deleting the kim see the elements before does not move but element after move forward
-
-	
-	
+	// after deleting the kim see the elements before does not move but element after move 
 	BOOST_CHECK(*(v.begin() + 4) != "kim");
 	BOOST_CHECK(*(v.begin() + 4) == "kima");
 	BOOST_CHECK(*(v.begin() + 5) != "kima");
 	BOOST_CHECK(*(v.begin() + 5) == "kimab");
 
-
-
-	
 	//auto pos1 = v.begin() + 2;
 	v.erase(v.begin() + 3);
 	BOOST_CHECK(*(v.begin() + 3) != "khole");
 
 	BOOST_CHECK(*(v.begin() + 3) == "kima");
-
-
 
 }
 
@@ -596,19 +489,12 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(erase_test_range,T,test_types) {
 	BOOST_CHECK(v.empty());
 	BOOST_CHECK(v.size() == 0);
 	BOOST_CHECK(v.capacity() == 0);
-
-
-
 	
-	for (size_t i = 1; i <= 10; ++i) {
+	for (int i = 1; i <= 10; ++i) {
 		v.insert(i);
 		BOOST_CHECK(v.size() == i);
 		BOOST_CHECK(!v.empty());
 	}
-
-	//for (auto e : v) {
-	//	cout << "in the vector = " << e << endl;
-	//}
 
 	auto first = v.begin();
 	auto last = v.begin() + 5;
@@ -628,11 +514,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(erase_test_range,T,test_types) {
 
 	}
 }
-
-
-
-
-
 
 /*
 Method = erase range
@@ -666,31 +547,18 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(clear_test, T, test_types) {
 	BOOST_CHECK(v.empty());
 	BOOST_CHECK(v.size() == 0);
 	BOOST_CHECK(v.capacity() == 0);
-
-
-
-	//	vector_set<int>::iterator it1 = v.begin();
-	for (size_t i = 1; i <= 10; ++i) {
+	
+	for (int i = 1; i <= 10; ++i) {
 		v.insert(i);
-		//	cout << "*it  = " << *it1 << endl;
+		
 		BOOST_CHECK(v.size() == i);
 		BOOST_CHECK(!v.empty());
-		//BOOST_CHECK(*it1 == i);
 	}
 
-	
-
-	
-
 	v.clear();
-	
 
 	BOOST_CHECK(v.size() == 0);
 	BOOST_CHECK(v.empty());
-
-
-
-
 
 	auto i = 0;
 	auto d = 6;
@@ -736,14 +604,11 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(copy_optor,T, test_types) {
 
 
 		vector_set<T>::iterator it1 = v.begin();
-	for (size_t i = 1; i <= 10; ++i) {
+	for (int i = 1; i <= 10; ++i) {
 		v.insert(i);
-		//	cout << "*it  = " << *it1 << endl;
 		BOOST_CHECK(v.size() == i);
 		BOOST_CHECK(!v.empty());
-		/*BOOST_CHECK(*it1 == i);
-		cout << "*it1  " << *it1 << endl;*/
-		;
+		
 	}
 
 	//checking capacity
@@ -753,9 +618,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(copy_optor,T, test_types) {
 	for (vector_set<T> ::iterator it = v.begin(); it <= v.begin()+9; ++it, ++i) {
 		
 		
-		//check before element does not move
 		BOOST_CHECK(*(v.begin() + i) == *it);
-		//BOOST_CHECK(v.size() == i+1);
+		
 
 	}
 	
@@ -781,7 +645,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(copy_optor,T, test_types) {
 	auto f = 0;
 	for (size_t i = 1; i <= 10; ++i,++f) {
 	
-		//	cout << "*it  = " << *it1 << endl;
+		
 		BOOST_CHECK(*v_Copy.begin() == *v.begin());
 		BOOST_CHECK(*(v_Copy.begin() +f) == *(v.begin()+f));
 		// the end pointer should have different address
@@ -792,17 +656,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(copy_optor,T, test_types) {
 		
 		
 	}
-//	vector_set<T> v_Copy2{ 11,12,13,1,41,51,6 };
-//	vector_set<T> v_Copy3{ 11,12,13,1,41,51,6 };
-//
-//	// equal assignoperator
-//BOOST_CHECK_MESSAGE(v_Copy2 == v_Copy3,"Error They shoudl be equall");
-//	BOOST_CHECK(v== v_Copy);
-//	BOOST_CHECK(v != v_Copy2);
-//	BOOST_CHECK(v != v_Copy3);
-//	BOOST_CHECK(v > v_Copy2);
-//	BOOST_CHECK(v > v_Copy3);
-//
 }
 
 /*
@@ -834,7 +687,7 @@ BOOST_AUTO_TEST_CASE(copy_string_optor) {
 	auto f = 0;
 	for (size_t i = 1; i <= 5; ++i, ++f) {
 
-		//	cout << "*it  = " << *it1 << endl;
+		
 		BOOST_CHECK(*v_Copy.begin() == *v.begin());
 		BOOST_CHECK(*(v_Copy.begin() + f) == *(v.begin() + f));
 		// the end pointer should have different address
@@ -870,31 +723,18 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(move_optor, T, test_types) {
 
 	v ={ 1,2,3,4,5,6,7,8,9,10 };
 
-	
-	//for (size_t i = 1; i <= 10; ++i) {
-	//	v.insert(i);
-	//	//	cout << "*it  = " << *it1 << endl;
-	//	BOOST_CHECK(v.size() == i);
-	//	BOOST_CHECK(!v.empty());
-	//	/*BOOST_CHECK(*it1 == i);
-	//	cout << "*it1  " << *it1 << endl;*/
-	//	;
-	//}
-
 	//checking capacity
 	BOOST_CHECK(v.capacity() >= v.size());
 
 	vector_set<T> ::iterator it = v.begin();
-	cout << "*it ==== "<<*it << endl;
-
+	
 	auto i = 0;
 	for (; it <= v.begin() + 9; ++it, ++i) {
 
 
 		//check before element does not move
 		BOOST_CHECK(*(v.begin() + i) == *it);
-		//BOOST_CHECK(v.size() == i+1);
-
+		
 	}
 
 
@@ -911,7 +751,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(move_optor, T, test_types) {
 
 	BOOST_CHECK(v_Move.capacity() != 0);
 
-	cout << "*it ==== "<<*it << endl;
+	
 
 
 	//check all the values
@@ -970,7 +810,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(Equality_optor,T,test_types) {
 		v6.insert(i);
 
 	}
-	
 
 	BOOST_CHECK(v1 == v2);
 	BOOST_CHECK(v3 == v5);
@@ -981,8 +820,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(Equality_optor,T,test_types) {
 	BOOST_CHECK(v6 == v7);
 	BOOST_CHECK(v6 == v1);
 	BOOST_CHECK(v6 != v4);
-
-	
 }
 
 
@@ -1010,9 +847,6 @@ BOOST_AUTO_TEST_CASE(Equality_bool_optor) {
 	v5.insert(true);
 	v5.insert(false);
 	v5.insert(true);
-
-
-
 	BOOST_CHECK(v1 == v2);
 	BOOST_CHECK(v3 == v4);
 	BOOST_CHECK(v2 != v4);
@@ -1020,7 +854,6 @@ BOOST_AUTO_TEST_CASE(Equality_bool_optor) {
 	BOOST_CHECK(v3 == v4);
 	BOOST_CHECK(v5 == v4);
 	BOOST_CHECK(v5 != v6);
-
 
 }
 
@@ -1059,8 +892,6 @@ BOOST_AUTO_TEST_CASE(Equality_string_optor) {
 
 	BOOST_CHECK(v5 != v4);
 	BOOST_CHECK(v5 != v6);
-
-
 }
 
 
@@ -1099,8 +930,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(operator_notEqual, T, test_types) {
 	BOOST_CHECK(v5 != v4);
 	BOOST_CHECK(v6 != v4);
 	BOOST_CHECK(v7 != v2);
-
-
 
 }
 
@@ -1184,11 +1013,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(bool_operator_greaterThan, T, bool_test_types) {
 	vector_set<T> v1 = { true };
 	vector_set<T> v2 = { false };
 
-
-
 	BOOST_CHECK(v2 < v1);
-	
-
 }
 
 
@@ -1265,8 +1090,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(operator_lessThanEquall, T, test_types) {
 }
 
 
-
-
 /*
 Method = equal string operator >=
 */
@@ -1287,7 +1110,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(string_operator_lessThanEquall, T, string_test_typ
 	BOOST_CHECK(v5 >= v4);
 	BOOST_CHECK(v6 >= v4);
 	BOOST_CHECK(v6 >= v7);
-
 
 }
 
@@ -1347,8 +1169,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(string_operator_greaterThanEquall, T, string_test_
 	BOOST_CHECK(v4 <= v5);
 	BOOST_CHECK(v4 <= v6);
 	BOOST_CHECK(v7 <= v6);
-
-
 }
 
 /*
@@ -1360,14 +1180,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(bool_operator_greaterThanEquall, T, bool_test_type
 	vector_set<T> v2 = { false };
 	vector_set<T> v3 = { false };
 
-
-
-
 	BOOST_CHECK(v2 <= v1);
 	BOOST_CHECK(v2 <= v3);
-
-
-
 }
 /*
 Method  = find
@@ -1428,8 +1242,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(capacity_test, T,test_types) {
 
 	for (auto i = 1; i <= 1000; ++i) {
 		v.insert(i);
-		
-
 	}
 	
 	BOOST_CHECK_MESSAGE(v.capacity() >= v.size(),"Error since it cannot be equal because char is 256 not 1000");
@@ -1499,16 +1311,11 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(destructor_test, T, test_types)
 Method = swap*/
 BOOST_AUTO_TEST_CASE_TEMPLATE(swap_test, T, test_types)
 {
-
 	vector_set<T> v1= { 1 };
 	vector_set<T> v2 = { 2 };
 	swap(v1,v2);
 	BOOST_CHECK(*(v2.begin())== 1);
 	BOOST_CHECK(*(v1.begin()) == 2);
-
-	
-
-
 }
 
 
@@ -1540,6 +1347,47 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(swap_bool_test, T, bool_test_types)
 
 }
 
+
+/*
+Method = other swap*/
+BOOST_AUTO_TEST_CASE_TEMPLATE(other_swap_test, T, test_types)
+{
+	vector_set<T> v1 = { 1 };
+	vector_set<T> v2 = { 2 };
+	v1.swap (v2);
+	BOOST_CHECK(*(v2.begin()) == 1);
+	BOOST_CHECK(*(v1.begin()) == 2);
+}
+
+
+
+/*
+Method = other swap using string*/
+BOOST_AUTO_TEST_CASE_TEMPLATE(other_swap_string_test, T, string_test_types)
+{
+
+	vector_set<T> v1 = { "Weekend" };
+	vector_set<T> v2 = { "Eminem" };
+	v1.swap(v2);
+	BOOST_CHECK(*(v2.begin()) == "Weekend");
+	BOOST_CHECK(*(v1.begin()) == "Eminem");
+
+}
+
+/*
+Method = other swap using bool*/
+BOOST_AUTO_TEST_CASE_TEMPLATE(other_swap_bool_test, T, bool_test_types)
+{
+
+	vector_set<T> v1 = { true };
+	vector_set<T> v2 = { false };
+	v1.swap(v2);
+	BOOST_CHECK(*(v2.begin()) == true);
+	BOOST_CHECK(*(v1.begin()) == false);
+
+}
+
+
 // check for sorted vector_set
 BOOST_AUTO_TEST_CASE_TEMPLATE(sort_Test, T, test_types) {
 	vector_set<T> v1 = { 5,6,9,8,7,4,13,6,1,5,41,2 };
@@ -1555,6 +1403,10 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(sort_string_Test, T, string_test_types) {
 	BOOST_CHECK_MESSAGE(*(v1.begin()) == "a", "Error v1.begin should be a since it is sorted");
 	BOOST_CHECK_EQUAL(*(v1.begin() + 1), "d");
 }
+
+
+
+
 
 
 
@@ -1579,3 +1431,125 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(unique_string_Test, T, string_test_types) {
 	BOOST_CHECK_MESSAGE(*(v1.begin()) == "a", "Error v1.begin should be a since it is sorted");
 	BOOST_CHECK_EQUAL(*(v1.begin() + 1), "d");
 }
+
+#ifndef exhaust
+BOOST_AUTO_TEST_CASE(begin_end)
+{
+	vector_set<int> v1;
+	for (int i = 1; i <= 100000000; ++i) {
+		v1.insert(i);
+	}
+	BOOST_CHECK(*(v1.begin()) == 1);
+
+	auto it = (v1.begin());
+	auto i = 1; 
+	for (; it != v1.end(); ++it,++i) {
+		BOOST_CHECK(*it == i);
+	}
+
+
+
+}
+#endif
+
+//being_end
+BOOST_AUTO_TEST_CASE_TEMPLATE(begin_end,T,test_types) {
+
+	vector_set<T> sv1;
+	
+	for (int i = 1; i <= 10; ++i) {
+	
+		sv1.insert(100 + i);
+	}
+
+	BOOST_CHECK_EQUAL(*sv1.begin(), 101);
+
+	BOOST_CHECK_EQUAL(*(sv1.end() - 1), 110);
+
+
+}
+
+
+//begin_end_string
+BOOST_AUTO_TEST_CASE_TEMPLATE(begin_end_string, T,string_test_types) {
+
+	vector_set<string>sv1;
+	
+	for (int i = 1; i <= 10; ++i) {
+	
+		sv1.insert("abc");
+	}
+
+	BOOST_CHECK_EQUAL(*sv1.begin(), "abc");
+
+	BOOST_CHECK_EQUAL(*(sv1.end() - 1), "abc");
+
+}
+
+//cbegin_cend
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(cbegin_cend, T, test_types) {
+	vector_set<T>sv1;
+
+	for (int i = 1; i <= 10; ++i) {
+
+		sv1.insert(100 + i);
+	}
+
+
+
+	BOOST_CHECK_EQUAL(*sv1.cbegin(), 101);
+	
+	BOOST_CHECK_EQUAL(*(sv1.cend() - 1), 110);
+}
+
+
+//cbeing_cend_string
+BOOST_AUTO_TEST_CASE_TEMPLATE(cbegin_cend_string, T, string_test_types) {
+	vector_set<string>sv1;
+	
+	for (int i = 1; i <= 10; ++i) {
+	
+		sv1.insert("abc");
+	}
+
+	BOOST_CHECK_EQUAL(*sv1.cbegin(), "abc");
+	
+	BOOST_CHECK_EQUAL(*(sv1.cend() - 1), "abc");
+}
+
+
+//rbegin
+BOOST_AUTO_TEST_CASE_TEMPLATE(rbegin_rend, T, test_types) {
+	vector_set<T>sv1;
+	
+	for (int i = 1; i <= 10; ++i) {
+	 
+		sv1.insert(100 + i);
+
+	}
+	
+	BOOST_CHECK_EQUAL(*sv1.rbegin(), 110);
+	
+	BOOST_CHECK_EQUAL(*(sv1.rend() - 1), 101);
+
+}
+
+
+
+//crbegin
+BOOST_AUTO_TEST_CASE_TEMPLATE(crbegin_crend, T, test_types) {
+
+vector_set<T>sv1;
+	
+for (int i = 1; i <= 10; ++i) {
+	
+		sv1.insert(100 + i);
+	
+	}
+	
+	BOOST_CHECK_EQUAL(*sv1.crbegin(), 110);
+	
+	BOOST_CHECK_EQUAL(*(sv1.crend() - 1), 101);
+}
+
