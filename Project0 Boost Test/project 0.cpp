@@ -1482,3 +1482,100 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(bool_capacity_test, T, bool_test_types) {
 }
 
 
+/*
+Method = destructor*/
+BOOST_AUTO_TEST_CASE_TEMPLATE(destructor_test, T, test_types) 
+{
+	
+	vector_set<T> v ;
+
+	// destructor is automatically called;
+
+	
+	
+}
+
+/*
+Method = swap*/
+BOOST_AUTO_TEST_CASE_TEMPLATE(swap_test, T, test_types)
+{
+
+	vector_set<T> v1= { 1 };
+	vector_set<T> v2 = { 2 };
+	swap(v1,v2);
+	BOOST_CHECK(*(v2.begin())== 1);
+	BOOST_CHECK(*(v1.begin()) == 2);
+
+	
+
+
+}
+
+
+/*
+Method = swap using string*/
+BOOST_AUTO_TEST_CASE_TEMPLATE(swap_string_test, T, string_test_types)
+{
+
+	vector_set<T> v1 = { "Weekend" };
+	vector_set<T> v2 = { "Eminem" };
+	swap(v1, v2);
+	BOOST_CHECK(*(v2.begin()) == "Weekend");
+	BOOST_CHECK(*(v1.begin()) == "Eminem");
+
+}
+
+
+
+/*
+Method = swap using bool*/
+BOOST_AUTO_TEST_CASE_TEMPLATE(swap_bool_test, T, bool_test_types)
+{
+
+	vector_set<T> v1 = { true };
+	vector_set<T> v2 = { false};
+	swap(v1, v2);
+	BOOST_CHECK(*(v2.begin()) == true);
+	BOOST_CHECK(*(v1.begin()) == false);
+
+}
+
+// check for sorted vector_set
+BOOST_AUTO_TEST_CASE_TEMPLATE(sort_Test, T, test_types) {
+	vector_set<T> v1 = { 5,6,9,8,7,4,13,6,1,5,41,2 };
+
+	BOOST_CHECK_MESSAGE(*(v1.begin()) == 1,"Error v1.begin should be 1 since it is sorted");
+	BOOST_CHECK_EQUAL(*(v1.begin() + 1) , 2);
+}
+
+// check for sorted vector_set using string
+BOOST_AUTO_TEST_CASE_TEMPLATE(sort_string_Test, T, string_test_types) {
+	vector_set<T> v1 = {"z","d","u","p","a" };
+
+	BOOST_CHECK_MESSAGE(*(v1.begin()) == "a", "Error v1.begin should be a since it is sorted");
+	BOOST_CHECK_EQUAL(*(v1.begin() + 1), "d");
+}
+
+
+
+// check for UNIQUE vector_set
+BOOST_AUTO_TEST_CASE_TEMPLATE(unique_Test, T, test_types) {
+	vector_set<T> v1 = { 1,2,1,2,3,4,5,5,5,6,7,8,8,8,8,9,9,9 };
+
+	BOOST_CHECK_MESSAGE(*(v1.begin()) == 1, "Error v1.begin should be 1 since it is sorted");
+	BOOST_CHECK_EQUAL(*(v1.begin() + 2), 3);
+	BOOST_CHECK_EQUAL(*(v1.end() - 1), 9);
+	BOOST_CHECK_EQUAL(v1.size(), 9);
+
+
+	BOOST_CHECK_EQUAL(*(v1.end() - 2), 8);
+
+}
+
+// check for sorted vector_set using string
+BOOST_AUTO_TEST_CASE_TEMPLATE(unique_string_Test, T, string_test_types) {
+	vector_set<T> v1 = { "z","d","u","p","a" };
+
+	BOOST_CHECK_MESSAGE(*(v1.begin()) == "a", "Error v1.begin should be a since it is sorted");
+	BOOST_CHECK_EQUAL(*(v1.begin() + 1), "d");
+}
