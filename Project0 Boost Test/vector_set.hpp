@@ -130,12 +130,12 @@ bool operator < (vector_set<Key> const& lhs, vector_set<Key> const& rhs) {
 		if (*left < *right)
 			return true;
 		else if (*left > *right)
-			return false;7
+			return false;
 		++left, ++right;
 	}
 	if (right==rhs.end())
 		return false;
-	
+
 	return true;
 }
 template <class Key> inline bool operator > (vector_set<Key> const& lhs, vector_set<Key> const& rhs) { return rhs < lhs; }
@@ -186,13 +186,9 @@ vector_set<Key>& vector_set<Key>::operator = (vector_set<Key> && other) noexcept
 // vector_set::operator = (initializer)
 template <class Key>
 vector_set<Key>& vector_set<Key>::operator = (std::initializer_list<value_type> iList) {
-	auto newBuffer = new value_type[iList.size()];
-	auto to = newBuffer;
-	for (auto from : iList)
-		*to++ = from;
-	delete[] beg_;
-	beg_ = newBuffer;
-	cap_ = end_ = to;
+
+	vector_set<Key> newSet(iList);
+	newSet.swap(*this);
 
 	return *this;
 }
@@ -232,7 +228,7 @@ template <class Key>
 void vector_set<Key>::clear() noexcept {
 	while (end_ != beg_) {
 		--end_;
-		*end_ = std::move(Key());//remove element ND
+		*end_ = std::move(Key());
 	}
 }
 
@@ -242,12 +238,11 @@ void vector_set<Key>::clear() noexcept {
 template <class Key>
 typename vector_set<Key>::iterator vector_set<Key>::erase(const_iterator pos) {
 	value_type* to = const_cast<value_type*>(pos);
+	--end_;
 	while (to != end_) {
 		*to = std::move(*(to + 1));
-		
 		++to;
 	}
-	--end_;
 
 	return pos;
 }
